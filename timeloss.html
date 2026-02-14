@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Level Design Portfolio - Timeloss</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body class="timeloss">
+		<a id="backlink" href="index.html">Back to Main Page</a>
+		<h1>Timeloss</h1>
+		<blockquote>
+			Timeloss is a (currently unfinished) arcade-style 2D platformer I'm currently working on.
+			You can use arrow keys to move around and jump with Z, X, or the up arrow. (If the game
+			asks for an O or X button, those are the Z and X keys on your keyboard.)
+		</blockquote>
+		<h1><iframe src="timeloss-bundled-debug.html" width="650" height="540"></iframe></h1>
+		<blockquote>
+			The game will load with debug tools enabled the first time you hit play.
+			You can press Q (to move backwards) and E (to move forwards) through levels
+			sequentially. The game's levels are segmented into "worlds" containing 16
+			levels each. You can press a number 1-8 to warp to the start of that world.
+			Currently all of world 1 and levels 1 to 10 of world 2 are considered "finished."
+		</blockquote>
+		<hr>
+		<details open>
+			<summary>More debug controls</summary>
+			<ul>
+				<li>Q - Previous level</li>
+				<li>E - Next Level</li>
+				<li>W - Reload level</li>
+				<li>1-8 - Warp to world</li>
+				<li>T - Give yourself more time</li>
+				<li>U - Set time to 3 seconds</li>
+				<li>~ - Return to main menu</li>
+				<li>I - Show debug information</li>
+				<li>O - Test level completion</li>
+				<li>Right Click - Teleport player to mouse cursor</li>
+			</ul>
+		</details>
+		<hr>
+		<h2>Screenshots</h2>
+		<img src="timeloss-levels.png">
+		<p><strong>Editor Used:</strong> <a href="https://www.mapeditor.org/" target="_blank">Tiled</a> with a custom export plugin</p>
+		<h2>Level design challenges</h2>
+		<p>
+			The goal is to complete as many levels as possible before your timer runs out. Collecting
+			100 coins gives you another minute of time. So, one challenge in making levels for this
+			game has been balancing the number of coins you collect so you still feel a sense of
+			urgency, without making it too hard to gather enough coins to keep playing. The first
+			world is meant to serve as a sort of hidden "tutorial" to the game's core mechanics,
+			with a notable increase in difficulty starting in world 2 and continuing throughout
+			the game.
+		</p>
+		<p>
+			I've written the game for <a href="https://www.lexaloffle.com/pico-8.php" target="_blank">PICO-8</a>,
+			which restricts the screen size to 128x128 pixels. The game's levels have been restricted
+			to the size of the screen. Additionally, each level's starting point (with the exception
+			of the first level in a world) must be the same position on-screen as the previous level's
+			exit point. This was done so that you don't need to search for where the player spawns
+			each time you enter a new level. Since each level is timed, spawning in the same point
+			as the previous exit facilitates a smooth transition for the player and greater efficiency
+			in moving through the levels, maintaining the flow of gameplay. Combining that with the
+			limited level size created a very fun and unique challenge when making levels for this game.
+		</p>
+		<h2>Development challenges</h2>
+		<p>
+			PICO-8 has a lot of arbitrary limitations which have required me to find workarounds as
+			I've been developing this game. There's limited space in ROM for music storage, only enough
+			for two of the songs I wrote for the game. So, to overcome this issue and "create" more
+			space for music, I wrote some code that lets me pack and unpack music data from the section
+			of ROM that stores sprites. (You play as a square, so it's not like I was using that space
+			for anything.) Since rendering actual 3D in the background would take away too much CPU
+			time from the gameplay, I don't. Instead, I faked it using a few points rotating in an oval
+			pattern and then connecting them with lines. 
+		</p>
+		<p>
+			At one point during development, the debug tools I had created were causing the game to
+			exceed PICO-8's limit on code size. Since I wasn't planning on shipping the debug tools
+			with the final game, I wrote a bytecode interpreter that used as few lines of code as
+			possible. I then rewrote the debug tools in that bytecode format using a custom assembler
+			I created. I've learned so much just from working on this one project.
+		</p>
+	</body>
+</html>

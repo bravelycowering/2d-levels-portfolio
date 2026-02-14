@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en-us">
+	<head>
+		<title>Level Design Portfolio - 90 Degrees</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<a id="backlink" href="index.html">Back to Main Page</a>
+		<center>
+			<div>
+				<h1>90 Degrees</h1>
+				<blockquote>
+					90 Degrees is a 2D precision platformer I created many years ago.
+					You can use arrow keys to move around, jump with Space or C, and pause with Escape.
+					Additionally, all controls can be rebound in the settings menu.
+				</blockquote>
+				<blockquote><i>
+					Exporting this one to work in web browsers was a lot tougher than I initially expected!
+					The specific framework I'm using had some weirdly specific issues with the filesystem and audio modules
+					in HTML5, so in-game level music has been disabled.
+				</i></blockquote>
+				<canvas id="loadingCanvas" oncontextmenu="event.preventDefault()" width="960" height="540"></canvas>
+				<canvas id="canvas" oncontextmenu="event.preventDefault()" style="display: none;" height="0"></canvas>
+			</div>
+		</center>
+
+		<blockquote>To forcibly unlock all the levels, go to the main menu and type "colours", then press the button labeled "ULOCK" on the debug screen that appears.</blockquote>
+		<blockquote>To open the debug console, press the ~ key on your keyboard. You can type the word "god" and hit enter to toggle invulnerability, and you can type "fly" and press enter to toggle flying, which should allow you to fly around and see all the levels.</blockquote>
+		<h2>Screenshots</h2>
+		<img src="90degrees-levels.png">
+		<p><strong>Editor Used:</strong> In-Game level editor (and Notepad to manually edit level files before I'd finished the editor)</p>
+		<h2>Level design process</h2>
+		<p>
+			This was one of the first fully featured games I had created, and one of the only ones I've completed, so
+			I was extra careful to try and design well thought-out levels with a decent difficulty curve. The game starts
+			with a very short hidden "tutorial" spanning roughly 6 levels, with the purpose of
+			getting the player familiar with the game's physics, along with some core mechanics like orange
+			lava that kills you, or light gray platforms you can jump through.
+		</p>
+		<p>
+			For each gimmick the game introduces, there are five levels to accompany it. The first
+			level teaches the player what the gimmick is and how to use it by isolating it in a fairly
+			easy room. This way the player could experiment with the new object to learn about it in
+			a mostly consequence-free environment. At the time I quite disliked games that would
+			handhold the player throughout the entire experience, so my main goal with this was to teach the new
+			mechanic without placing text or an arrow that simply told you how to use it. Additionally, each
+			of these rooms were designed in a way that the player would not be able to complete it until
+			they used the gimmick in the intended manner. Next there are three
+			levels that give the player some practice with the new mechanic, each steadily increasing in difficulty
+			and sometimes introducing new ways to use the mechanic. Lastly, there's one level that serves to test
+			the player on how well they understand the mechanic.
+		</p>
+		<p>
+			I didn't strictly adhere to this formula for every gimmick; the spring gets 2 learning rooms and
+			they share space with the end of the hidden tutorial. The gravity field's learning room tries to
+			catch you off-guard, instead giving you space at the start of the next room to get a feel for
+			reverse gravity. But for every new gimmick that was introduced, I gave them all a dedicated space
+			for the player to experiment and learn how it works before thrusting them into more challenging levels.
+			The game ends with a room dedicated to refreshing the player on the various gimmicks they've encountered
+			so far, a challenge room utilizing all of them, a long ominous hallway with no music (just for fun),
+			and finally a huge room combining everything the player has learned through the game.
+		</p>
+		<h2>What I learned</h2>
+		<p>
+			I had multiple rounds of playtesting with multiple of my friends and through a discord server
+			I ran online, which helped me tweak various aspects of the levels that were overly hard or easy.
+			This also helped me realize that it's very hard to playtest something yourself when you already
+			know the solution. There would be times where I thought of a <i>really cool jump</i>, but when
+			playtested people would report that the level had an inconsistant difficulty as a result. This
+			project greatly helped me refine my skills as a game developer and level designer.
+		</p>
+
+		<script type='text/javascript'>
+			function goFullScreen(){
+						var canvas = document.getElementById("canvas");
+						if(canvas.requestFullScreen)
+								canvas.requestFullScreen();
+						else if(canvas.webkitRequestFullScreen)
+								canvas.webkitRequestFullScreen();
+						else if(canvas.mozRequestFullScreen)
+								canvas.mozRequestFullScreen();
+			}
+			function FullScreenHook(){
+				var canvas = document.getElementById("canvas");
+				canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+				canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+			}
+			var loadingContext = document.getElementById('loadingCanvas').getContext('2d');
+			function drawLoadingText(text) {
+				var canvas = loadingContext.canvas;
+
+				loadingContext.fillStyle = "rgb(48, 48, 48)";
+				loadingContext.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
+
+				loadingContext.font = '2em arial';
+				loadingContext.textAlign = 'center'
+				loadingContext.fillStyle = "rgb( 255, 255, 255 )";
+				loadingContext.fillText(text, canvas.scrollWidth / 2, canvas.scrollHeight / 2);
+			}
+
+			window.onload = function () { window.focus(); };
+			window.onclick = function () { window.focus(); };
+
+			var Module = {
+				arguments: ["./"],
+				INITIAL_MEMORY: 30000000,
+				printErr: console.error.bind(console),
+				canvas: (function() {
+					var canvas = document.getElementById('canvas');
+
+					// As a default initial behavior, pop up an alert when webgl context is lost. To make your
+					// application robust, you may want to override this behavior before shipping!
+					// See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+					canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+					return canvas;
+				})(),
+				setStatus: function(text) {
+					if (text) {
+						drawLoadingText(text);
+					} else if (Module.remainingDependencies === 0) {
+						document.getElementById('loadingCanvas').style.display = 'none';
+						document.getElementById('canvas').style.visibility = 'visible';
+					}
+				},
+				totalDependencies: 0,
+				remainingDependencies: 0,
+				monitorRunDependencies: function(left) {
+					this.remainingDependencies = left;
+					this.totalDependencies = Math.max(this.totalDependencies, left);
+					Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+				}
+			};
+			Module.setStatus('Click to play!');
+			window.onerror = function(event) {
+				// TODO: do not warn on ok events like simulating an infinite loop or exitStatus
+				Module.setStatus('Exception thrown, see JavaScript console');
+				Module.setStatus = function(text) {
+					if (text) Module.printErr('[post-exception status] ' + text);
+				};
+			};
+
+			var applicationLoad = function(e) {
+				Love(Module);
+			}
+
+			var loadingCanvas = document.getElementById("loadingCanvas");
+			loadingCanvas.onclick = function(e) {
+				Module.setStatus('Downloading...');
+				applicationLoad(e);
+				loadingCanvas.onclick = null;
+				canvas.style.display = "block";
+
+				window.addEventListener("keydown", function(e) {
+					// space and arrow keys
+					if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+						e.preventDefault();
+					}
+				}, false);
+			}
+		</script>
+		<script type="text/javascript" src="game.js"></script>
+		<script async type="text/javascript" src="love.js"></script>
+	</body>
+</html>
